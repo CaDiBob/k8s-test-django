@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: example
+data:
+  SECRET_KEY: "Ваш SECRET_KEY проекта Django"
+  DEBUG: "False"
+  DATABASE_URL: "postgres://имя пользователя БД:пароль пользователя БД@адрес хоста:порт/имя БД"
+  ALLOWED_HOSTS: localhost,127.0.0.1

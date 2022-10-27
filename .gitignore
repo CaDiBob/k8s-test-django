@@ -4,3 +4,4 @@ __pycache__/
 *$py.class
 old_manifests/
 postgres_volume/
+manifests/configmap.yaml
