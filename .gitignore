@@ -2,3 +2,5 @@
 __pycache__/
 *.py[cod]
 *$py.class
+old_manifests/
+postgres_volume/
