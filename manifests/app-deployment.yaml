@@ -26,4 +26,4 @@ spec:
             name: http
           envFrom:
             - configMapRef:
-                name: django-env
+                name: env
