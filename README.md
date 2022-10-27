@@ -21,6 +21,78 @@ $ docker-compose run web ./manage.py createsuperuser
 
 Для тонкой настройки Docker Compose используйте переменные окружения. Их названия отличаются от тех, что задаёт docker-образа, сделано это чтобы избежать конфликта имён. Внутри docker-compose.yaml настраиваются сразу несколько образов, у каждого свои переменные окружения, и поэтому их названия могут случайно пересечься. Чтобы не было конфликтов к названиям переменных окружения добавлены префиксы по названию сервиса. Список доступных переменных можно найти внутри файла [`docker-compose.yml`](./docker-compose.yml).
 
+## Как запустить в кластере Minikube
+
+[Docker](https://docs.docker.com/engine/install/), [Minikube](https://kubernetes.io/ru/docs/tasks/tools/install-minikube/), [kubectl](https://kubernetes.io/ru/docs/tasks/tools/install-kubectl/) должны быть установлены.
+
+##### Склонировать проект:
+
+```bash
+git clone git@github.com:CaDiBob/k8s-test-django.git
+```
+
+##### Собрать Docker-образ:
+
+```bash
+sudo docker build -t ваше_имя_на_докерхаб/имя_репозитория backend_main_django/
+```
+##### Запушить в ваш докерхаб:
+
+```bash
+sudo docker push ваше_имя_на_докерхаб/имя_репозитория
+```
+##### Запускаем локальный кластер Minikube:
+
+```bash
+minikube start
+```
+
+##### Запускаем ingress:
+
+```bash
+minikube addons enable ingress
+```
+
+##### Создаем пространство имен для нашего проекта:
+
+```bash
+kubectl create ns somename
+```
+Дальше все команды будем выполнять в созданном пространстве имен.
+
+##### Запустим наш проект в кластере Minikube:
+
+```bash
+kubectl -n somename apply -f manifests/
+```
+Сайт будет доступен по адресу cadibob.test для этого нужно добавить ваш IP Minikube в файл hosts.
+
+```bash
+minikube ip
+```
+
+##### Чтобы завершить работу проекта:
+
+```bash
+kubectl -n somename delete -f manifests/
+```
+
+##### Добавление переменных окружения:
+
+В файле ex-configmap.yaml прописать свои значения переменных и переименовать в configmap.yaml
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: example
+data:
+  SECRET_KEY: "Ваш SECRET_KEY проекта Django"
+  DEBUG: "False"
+  DATABASE_URL: "postgres://имя пользователя БД:пароль пользователя БД@адрес хоста:порт/имя БД"
+  ALLOWED_HOSTS: localhost,127.0.0.1
+```
+
 ## Переменные окружения
 
 Образ с Django считывает настройки из переменных окружения:
